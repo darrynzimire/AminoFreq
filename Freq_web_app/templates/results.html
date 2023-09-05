@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results</title>
+</head>
+<body>
+    <h1>Results</h1>
+    <p>Input sequence: {{ sequence }}</p>
+    <h2>Amino Acid Frequencies:</h2>
+    <ul>
+        {% for aa, freq in frequencies.items() %}
+        <li>{{ aa }}: {{ freq }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,51 @@
+
+1. perform_statistical_analysis():
+
+    This function performs statistical analysis to compare mutation frequencies between control and VRCO1 treatment
+    groups. It uses the chi-square test to assess the significance of differences in mutation frequencies and adjusts
+    p-values for multiple testing using the Benjamini-Hochberg procedure. It returns the adjusted p-values and a list
+    of significant sites based on the significance level (alpha).
+
+    parameters:
+        control_freq - (dict): A dictionary containing the mutation frequencies for each specific site in the control
+        group.
+        vrco1_freq - (dict): A dictionary containing frequencies of amino acids in the treatment group
+        sites - (list): A list of specific sites of interest.
+        alpha - (float, optional): The significance level of hypothesis testing (default=0.05)
+
+        Returns:
+            adjusted_p_values - (list): A list of adjusted p-values for each specific site after multiple testing
+            correction.
+            significant_sites - (list): A list of specific sites that show significant differences between control
+            and treatment groups.
+
+
+2. identify_mutations():
+
+    This function identifies mutations or amino acid variations at specific sites.
+
+    parameters:
+        sequences - (list): A list of Biopython SeqRecord objects representing the sequences to analyse.
+        reference_seq - (str): The reference sequence to compare against.
+        sites - (list): A list of integer positions indicating the specific site of interest.
+
+    Returns:
+        mutations - (list): A list of lists containing the identified mutations for each sequence.
+
+
+3. calculate_mutation_frequencies():
+
+    This function iterates over each site's identified mutations and counts the occurrences of each mutation.
+    It calculates the frequency of each mutation by dividing the count by the total number of mutations at
+    that site. The results are stored in a dictionary, where each site is associated with a sub-dictionary
+    containing the mutation frequencies.Note: This function assumes the mutations list is properly formatted,
+    with each sublist containing the identified mutations for the specific sequence using the identify_mutations()
+    function.
+
+    parameters:
+        mutations - (list): A list of lists containing the identified mutations for each sequence.
+
+    Returns:
+        mutation_freq - (dict): A dictionary containing the mutation frequencies for each site.
+
+4.
