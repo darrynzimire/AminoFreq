@@ -2,13 +2,36 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from io import BytesIO
 import matplotlib.cm as cm
+import weblogo.logo_formatter
+from pprint import pprint
 import output
 from weblogo import *
 import json
+import output
+import csv
 import sys
 
 
+def freq_by_position():
+    pass
+
+
+def logo_formatting():
+    # generate a logogram in PDF format
+    # generate a logogram in JPEG format
+    # generate a logogram in scalable vector graphics format
+    # generate a logogram in PNG format (600 DPI) resolution
+    # generate a text representation of the logodata
+    # generate a logogram in Encapsulated Postscript (EPS)
+    # convert between formats from EPS
+    pass
+
+
 def make_logogram(counts_mat, alphabet_map, sites, config_path):
+
+    """
+    description:
+    """
 
     with open(config_path, 'r') as config_file:
         config = json.load(config_file)
@@ -18,7 +41,6 @@ def make_logogram(counts_mat, alphabet_map, sites, config_path):
     for key, value in config.items():
         setattr(logooptions, key, value)
     logooptions.annotate = sites
-    # logooptions.logo_end = counts_mat.shape[0]
     color_scheme  = config.get("color_scheme")
     if color_scheme == "hydrophobicity":
         logooptions.color_scheme = hydrophobicity
@@ -28,11 +50,28 @@ def make_logogram(counts_mat, alphabet_map, sites, config_path):
         logooptions.color_scheme = charge
 
     format = LogoFormat(logodata, logooptions)
-    print(csv(logodata))
-    # Create PNG logo
-    png = png_formatter(logodata, format)
-    # png = weblogo.logo_formatter.png_formatter(logodata, format)
+    logodata_text = weblogo.logo_formatter.txt_formatter(logodata, format)
+    lines = logodata_text.decode("utf-8").split("\n")
+    data_rows = []
 
+    for line in lines[2:]:
+        if line.strip():
+            values = line.split("\t")
+            data_rows.append(values)
+
+    col_names  = data_rows[5][0] = "sites"
+    df = pd.DataFrame(columns=data_rows[5])
+    rows = data_rows[6:-1]
+    for i in rows:
+        df = df.append(pd.Series(i, index=df.columns), ignore_index=True)
+    df.reset_index(drop=True)
+    logodata_csv_dir = output.generate_outputdir("raw_frequencies.csv", zipped=False)
+    df["sites"] = sites
+    df = df.drop(columns=["Low", "High"], axis=1)
+    df.reset_index(drop=True, inplace=True)
+    df.to_csv(logodata_csv_dir, sep=",", header=True, index=False)
+    # print(df)
+    png = png_formatter(logodata, format)
     # Save PNG logo to a file
     _f = output.generate_outputdir('logogram.png', zipped=False)
     with open(_f, 'wb') as png_file:

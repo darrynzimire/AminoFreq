@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import collections
 from itertools import groupby
-from database import create_table_from_dataframe
-import plots
-import output
 from Bio import AlignIO, SeqIO
+from database import create_table_from_dataframe
+import output
+import plots
 import argparse
 import csv
 import os
@@ -221,6 +221,7 @@ def get_alignment_position_and_residue(freq_table, hxb2_seq, target_position):
             residue = hxb2_seq[i]
             break
     residue_freq = get_residue_frequency(freq_table, alignment_position)
+    # print(residue_freq)
     # print(residue_freq[1])
     # print(f"Query Position: {target_position}")
     # print(f"Aligned Position: {alignment_position}")
@@ -287,6 +288,7 @@ def main(file_path, query_sites):
     aln_refpos = aln_pos2[1]
     alignment = AlignIO.read(file_path, 'fasta')
     df_freq = alnSiteCompositionDF(alignment)
+    # print(df_freq)
     df_freq.to_csv("../deployment/Dash_app/Clade_Cref.csv", index=True, header=True)
     table_name = 'CladeC_refpanel'
     create_table_from_dataframe(df_freq, table_name)
@@ -302,8 +304,11 @@ def main(file_path, query_sites):
         al.append(aln_pos[1] -1)
         df_data.append(all_freq)
     filtered_df = df_freq.loc[al]
+    print(filtered_df)
+    raw_counts_csv = output.generate_outputdir('the_rawcounts.csv', zipped=False)
+    filtered_df.to_csv(raw_counts_csv, header=True, index=False)
     count_mat, mapped_alphabet = countmat_from_dataframe(filtered_df)
-    output.generate_report(df_data, 'frequencies_for_sites.txt')
+    # output.generate_report(df_data, 'frequencies_for_sites.txt')
     plots.make_logogram(count_mat, mapped_alphabet, sites,  r'../data/weblogo_config.json')
 
 

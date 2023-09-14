@@ -1,4 +1,5 @@
 import datetime
+import pandas as pd
 import os
 
 
@@ -50,3 +51,7 @@ def generate_report(output1_data, output2_file):
 def generate_logging():
     pass
 
+
+def write_freq_to_csv(data):
+    output = data.to_csv('raw_freq_for_sites.csv', header=True, index=True)
+    return output
